@@ -1,0 +1,163 @@
+/* CSS RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+/* THEME VARIABLES */
+:root {
+  --bg: #f4f6fb;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --primary: #4f46e5;
+  --button: #e5e7eb;
+}
+
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --card: #020617;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --button: #1e293b;
+}
+
+/* LAYOUT */
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  padding: 2.5rem 1rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  letter-spacing: -1px;
+}
+
+.hero p {
+  margin: 1rem auto;
+  max-width: 520px;
+  color: var(--muted);
+}
+
+#themeToggle {
+  margin-top: 1rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+}
+
+/* APP */
+.app {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.calculator {
+  width: 100%;
+  max-width: 360px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  overflow: hidden;
+  animation: fadeIn 0.6s ease;
+}
+
+.display {
+  background: linear-gradient(135deg, var(--primary), #6366f1);
+  color: #fff;
+  padding: 1.5rem;
+  text-align: right;
+}
+
+#previous {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+#current {
+  font-size: 2.2rem;
+  font-weight: 600;
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+button {
+  padding: 1.2rem;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  background: var(--button);
+  transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+  background: #c7d2fe;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.operator {
+  background: #c7d2fe;
+  color: #1e1b4b;
+}
+
+.equal {
+  background: var(--primary);
+  color: #fff;
+  grid-row: span 2;
+}
+
+.zero {
+  grid-column: span 2;
+}
+
+.action {
+  background: #fecaca;
+}
+
+.footer {
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+}
