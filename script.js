@@ -1,97 +1,93 @@
 const current = document.getElementById("current");
 const previous = document.getElementById("previous");
-const buttons = document.querySelectorAll("button");
 const themeToggle = document.getElementById("themeToggle");
 
 let currentValue = "0";
 let previousValue = "";
 let operator = null;
 
-/* CALCULATOR LOGIC */
-buttons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const value = btn.dataset.value;
-    const action = btn.dataset.action;
+/* Update display */
+function updateDisplay() {
+  current.textContent = currentValue;
+}
 
-    if (value) appendNumber(value);
-    if (btn.classList.contains("operator")) chooseOperator(value);
-    if (action === "equals") calculate();
-    if (action === "clear") reset();
-    if (action === "delete") deleteLast();
+/* Numbers */
+document.querySelectorAll("[data-number]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (btn.textContent === "." && currentValue.includes(".")) return;
+    currentValue = currentValue === "0" ? btn.textContent : currentValue + btn.textContent;
+    updateDisplay();
   });
 });
 
-function appendNumber(num) {
-  if (num === "." && currentValue.includes(".")) return;
-  currentValue = currentValue === "0" ? num : currentValue + num;
-  updateDisplay();
-}
+/* Operators */
+document.querySelectorAll("[data-operator]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    previousValue = currentValue;
+    operator = btn.dataset.operator;
+    currentValue = "0";
+  });
+});
 
-function chooseOperator(op) {
-  if (operator) calculate();
-  operator = op;
-  previousValue = currentValue;
-  currentValue = "0";
-  updateDisplay();
-}
+/* Actions */
+document.querySelectorAll("[data-action]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const action = btn.dataset.action;
 
+    if (action === "clear") {
+      currentValue = "0";
+      previousValue = "";
+      operator = null;
+    }
+
+    if (action === "sign") {
+      currentValue = String(Number(currentValue) * -1);
+    }
+
+    if (action === "percent") {
+      currentValue = String(Number(currentValue) / 100);
+    }
+
+    if (action === "equals") {
+      calculate();
+    }
+
+    updateDisplay();
+  });
+});
+
+/* Calculate */
 function calculate() {
   if (!operator) return;
-  const result = eval(`${previousValue}${operator}${currentValue}`);
+
+  const a = Number(previousValue);
+  const b = Number(currentValue);
+  let result = 0;
+
+  if (operator === "+") result = a + b;
+  if (operator === "-") result = a - b;
+  if (operator === "*") result = a * b;
+  if (operator === "/") result = b === 0 ? "Error" : a / b;
+
   currentValue = String(result);
   operator = null;
-  previousValue = "";
-  updateDisplay();
 }
 
-function reset() {
-  currentValue = "0";
-  previousValue = "";
-  operator = null;
-  updateDisplay();
-}
-
-function deleteLast() {
-  currentValue =
-    currentValue.length > 1
-      ? currentValue.slice(0, -1)
-      : "0";
-  updateDisplay();
-}
-
-function updateDisplay() {
-  current.textContent = currentValue;
-  previous.textContent = operator
-    ? `${previousValue} ${operator}`
-    : "";
-}
-
-/* DARK MODE */
+/* THEME TOGGLE (WORKING) */
 themeToggle.addEventListener("click", () => {
   const html = document.documentElement;
   const isDark = html.dataset.theme === "dark";
-
   html.dataset.theme = isDark ? "light" : "dark";
-  themeToggle.textContent = isDark
-    ? "🌙 Dark Mode"
-    : "☀️ Light Mode";
-
-  localStorage.setItem("theme", html.dataset.theme);
+  themeToggle.textContent = isDark ? "🌙" : "☀️";
 });
 
-/* LOAD THEME */
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme) {
-  document.documentElement.dataset.theme = savedTheme;
-  themeToggle.textContent =
-    savedTheme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+/* Load theme */
+if (localStorage.getItem("theme")) {
+  document.documentElement.dataset.theme = localStorage.getItem("theme");
 }
 
-/* KEYBOARD SUPPORT */
-document.addEventListener("keydown", e => {
-  if (/\d|\./.test(e.key)) appendNumber(e.key);
-  if ("+-*/".includes(e.key)) chooseOperator(e.key);
-  if (e.key === "Enter") calculate();
-  if (e.key === "Backspace") deleteLast();
-  if (e.key === "Escape") reset();
+themeToggle.addEventListener("click", () => {
+  localStorage.setItem("theme", document.documentElement.dataset.theme);
 });
+
+updateDisplay();
